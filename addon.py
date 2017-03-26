@@ -93,13 +93,13 @@ if len(sys.argv) > 1:
 
 		#addon.openSettings()
 		xbmc.executebuiltin('Addon.OpenSettings(%s)' % addonid)
-		xbmc.executebuiltin('SetFocus(204)')
+		xbmc.executebuiltin('SetFocus(205)')
 	quit()
 #
 
 
 # Display Starting Notification
-xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Starting", 1000, icon))
+if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Starting", 1000, icon))
 log("-------------------------------------------------------------------------")
 log("Starting")
 
@@ -200,7 +200,7 @@ while (not xbmc.abortRequested):
 		#
 
 		log("-- Started: " + myPlaylist[thePlaylist.getposition()]['episodeShow'] + " - " + myPlaylist[thePlaylist.getposition()]['episodeName'])
-		xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, myPlaylist[thePlaylist.getposition()]['episodeShow'] + "\r\n" + myPlaylist[thePlaylist.getposition()]['episodeName'], 5000, icon))
+		if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, myPlaylist[thePlaylist.getposition()]['episodeShow'] + "\r\n" + myPlaylist[thePlaylist.getposition()]['episodeName'], 5000, icon))
 		
 		log("-- Playlist Position: " + str(thePlaylist.getposition()))
 		
@@ -221,7 +221,7 @@ while (not xbmc.abortRequested):
 
 # All Done
 # Display Stopping Notification
-xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Stopping", 2000, icon))
+if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Stopping", 2000, icon))
 log("Stopping")
 log("-------------------------------------------------------------------------")
 #xbmc.sleep(2000)
