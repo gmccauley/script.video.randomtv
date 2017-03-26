@@ -14,3 +14,7 @@ There are a couple options in the setting menu:
 It seems to be working pretty well for me on a couple different Pi's running OSMC and on my Windows UWP installs, so I figured I would release it to see of others could benefit.
 
 Comments/feedback/bug reports welcome, but be gentle, it's my first ever addon.  ;-)
+
+
+## To Install
+Download the zip file and "Install from zip file" in Kodi
