@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.video.randomtv" name="RandomTV" version="0.1" provider-name="gmccauley">
+<addon id="script.video.randomtv" name="RandomTV" version="0.2" provider-name="gmccauley">
   <requires>
     <import addon="xbmc.python" version="2.25.0"/>
   </requires>
@@ -13,13 +13,17 @@
     <language></language>
     <platform>all</platform>
     <license>GNU General Public License, v2</license>
-    <forum></forum>
+    <forum>http://forum.kodi.tv/showthread.php?tid=310494</forum>
     <website></website>
     <email></email>
-    <source></source>
+    <source>https://github.com/gmccauley/script.video.randomtv</source>
     <news>
 v0.1 (25 March 2017)
   - Initial Build (Alpha)
+v0.2 (26 March 2017)
+  - Bummed Code
+  - Changed Logic
+  - Set Repeat Mode back to what it was before addon changed it to all
 	</news>
     <assets>
         <icon>resources/icon.png</icon>
