@@ -8,14 +8,15 @@ import sys
 
 
 def log(msg):
-	#xbmc.log("%s: %s" % (name,msg),level=xbmc.LOGDEBUG )
-	xbmc.log("%s: %s" % (name,msg), xbmc.LOGNOTICE)
+	xbmc.log("%s: %s" % (name,msg),level=xbmc.LOGDEBUG )
+	#xbmc.log("%s: %s" % (name,msg), xbmc.LOGNOTICE)
   
   
 def ResetPlayCount(myEpisode):
 	xbmc.sleep(5000)
 	log("--------- ResetPlayCount")
 	log("-- Episode Id: " + str(myEpisode['episodeId']))
+	log("-- Episode Name: " + str(myEpisode['episodeName']))
 	log("-- Last Played: " + myEpisode['lastPlayed'])
 	log("-- Play Count: " + str(myEpisode['playCount']))
 	log("-- Resume Position: " + str(myEpisode['resume']['position']))
@@ -142,7 +143,7 @@ else:
 	# Randomize Episodes and add to playlist
 	random.shuffle(myEpisodes)
 	for myEpisode in myEpisodes:
-		log("Added Episode to Playlist: " + myEpisode['episodeShow'] + " - " + myEpisode['episodeName'])
+		log("Added Episode to Playlist: " + str(myEpisode['episodeId']) + " -- " + myEpisode['episodeShow'] + " - " + myEpisode['episodeName'])
 		myPlaylist.add(url=myEpisode['episodeFile'])
 	#
 
