@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.video.randomtv" name="RandomTV" version="0.1" provider-name="gmccauley">
+  <requires>
+    <import addon="xbmc.python" version="2.25.0"/>
+  </requires>
+  <extension point="xbmc.python.script" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_us">RandomTV plays random TV episodes</summary>
+    <description lang="en_us">RandomTV plays random TV episodes without updating progress</description>
+    <disclaimer lang="en_us">My First Add-On.  Please by gentle</disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>GNU General Public License, v2</license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
+    <news>
+v0.1 (25 March 2017)
+  - Initial Build (Alpha)
+	</news>
+    <assets>
+        <icon>resources/icon.png</icon>
+        <fanart>resources/fanart.jpg</fanart>
+        <screenshot></screenshot>
+    </assets>
+  </extension>
+</addon>
