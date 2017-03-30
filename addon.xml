@@ -26,6 +26,7 @@ v0.2 (26 March 2017)
   - Set Repeat Mode back to what it was before addon changed it to all
 v0.2.1 (29 March 2017)
   - Fixed condition where "Include All TV Shows"=true and "Include Unwatched"=false would result in Unwatched Episodes being included
+  - Added DialogBusy when starting and loading episode data
 	</news>
     <assets>
         <icon>resources/icon.png</icon>
