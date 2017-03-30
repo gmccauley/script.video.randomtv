@@ -92,6 +92,7 @@ if len(sys.argv) > 1:
 if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Starting", 1000, icon))
 log("-------------------------------------------------------------------------")
 log("Starting")
+busyDiag.create()
 
 
 # Get TV Episodes
@@ -106,7 +107,7 @@ if addon.getSetting("IncludeAll") == "true":
 			
 			if allEpisodes['result']['limits']['total'] > 0:
 				for episode in allEpisodes['result']['episodes']:
-					if addon.getSetting("IncludeUnwatched") == "false" or episode['playcount'] > 0:
+					if addon.getSetting("IncludeUnwatched") == "true" or episode['playcount'] > 0:
 						log("Added Episode: " + episode['label'].encode('utf-8').strip())
 						myEpisodes.append({'episodeId': episode['episodeid'], 'episodeShow': episode['showtitle'].encode('utf-8').strip(), 'episodeName': episode['label'].encode('utf-8').strip(), 'episodeFile': episode['file'].encode('utf-8').strip(), 'playCount': episode['playcount'], 'lastPlayed': episode['lastplayed'], 'resume': episode['resume']})
 else:
@@ -180,6 +181,7 @@ else:
 	log("-- New Repeat Mode: " + response['result']['repeat'])
 #
 
+busyDiag.close()
 
 while (not xbmc.abortRequested):
 	xbmc.sleep(100)
