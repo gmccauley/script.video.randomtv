@@ -10,8 +10,18 @@ import sys
 def log(msg):
 	xbmc.log("%s: %s" % (name,msg),level=xbmc.LOGDEBUG )
 	#xbmc.log("%s: %s" % (name,msg), xbmc.LOGNOTICE)
-  
-  
+
+
+def buildPlaylist(myEpisodes):
+	# Clear Playlist
+	myPlaylist.clear()
+
+	for myEpisode in myEpisodes:
+		log("Added Episode to Playlist: " + str(myEpisode['episodeId']) + " -- " + myEpisode['episodeShow'] + " - " + myEpisode['episodeName'])
+		myPlaylist.add(url=myEpisode['episodeFile'])
+	#
+
+
 def ResetPlayCount(myEpisode):
 	xbmc.sleep(5000)
 	log("--------- ResetPlayCount")
@@ -29,14 +39,22 @@ def ResetPlayCount(myEpisode):
 class MyPlayer(xbmc.Player):
 	def __init__(self, *args):
 		xbmc.Player.__init__(self, *args)
-		self.scriptStopped = False
 		self.mediaStarted = False
-		
+		self.mediaEnded = False
+		self.scriptStopped = False
+		log("============================================================= INIT")
+
 	def onPlayBackStarted(self):
 		self.mediaStarted = True
+		log("============================================================= START")
+
+	def onPlayBackEnded(self):
+		self.mediaEnded = True
+		log("============================================================= END")
 
 	def onPlayBackStopped(self):
 		self.scriptStopped = True
+		log("============================================================= STOP")
 #
 
 
@@ -50,6 +68,7 @@ busyDiag = xbmcgui.DialogBusy()
 myEpisodes = []
 
 includedShows = addon.getSetting("includedShows")
+
 
 
 # Select Shows Settings Dialog
@@ -89,7 +108,7 @@ if len(sys.argv) > 1:
 
 
 # Display Starting Notification
-if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Starting", 1000, icon))
+if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Starting", 2000, icon))
 log("-------------------------------------------------------------------------")
 log("Starting")
 busyDiag.create()
@@ -136,58 +155,27 @@ else:
 	
 	# Initialize our Player
 	player = MyPlayer()
-
-	# Create and Clear Playlist
+	
+	# Create Playlist
 	myPlaylist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-	myPlaylist.clear()
 
-	# Randomize Episodes and add to playlist
+	# Shuffle Episodes
 	random.shuffle(myEpisodes)
-	for myEpisode in myEpisodes:
-		log("Added Episode to Playlist: " + str(myEpisode['episodeId']) + " -- " + myEpisode['episodeShow'] + " - " + myEpisode['episodeName'])
-		myPlaylist.add(url=myEpisode['episodeFile'])
-	#
+	
+	# Build Playlist
+	buildPlaylist(myEpisodes)
 
 	# Start Player
 	player.play(item=myPlaylist)
-
-	# Get Active Player
-	log("Getting Active Player")
-	command = '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}'
-	response = json.loads(xbmc.executeJSONRPC(command))
-	log("-- " + str(response))
-	playerID = response['result'][0]['playerid']
-	log("-- " + "Player ID: " + str(playerID))
-		
-	# Get Current Repeat Mode
-	log("Getting Current Repeat Mode")
-	command = '{"jsonrpc": "2.0", "method": "Player.GetProperties", "params": {"playerid": %d, "properties": ["repeat"]}, "id": 1}' % (playerID)
-	response = json.loads(xbmc.executeJSONRPC(command))
-	log("-- " + str(response))
-	currentRepeat = response['result']['repeat']
-	log("-- " + "Current Repeat Mode: " + currentRepeat)
-	
-	# Set Repeat Mode
-	log("Setting Repeat Mode")
-	command = '{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": {"playerid": %d, "repeat": "all"}, "id": 1}' % (playerID)
-	response = json.loads(xbmc.executeJSONRPC(command))
-	log("-- " + str(response))
-	
-	# Get New Repeat Mode
-	log("Getting New Repeat Mode")
-	command = '{"jsonrpc": "2.0", "method": "Player.GetProperties", "params": {"playerid": %d, "properties": ["repeat"]}, "id": 1}' % (playerID)
-	response = json.loads(xbmc.executeJSONRPC(command))
-	log("-- " + str(response))
-	log("-- New Repeat Mode: " + response['result']['repeat'])
+	xbmc.sleep(100)
 #
 
-busyDiag.close()
 
 while (not xbmc.abortRequested):
-	xbmc.sleep(100)
-
 	if player.mediaStarted:
 		log("--------- mediaStarted")
+		busyDiag.close()
+
 		if 'lastEpisode' in locals():
 			log("-- lastEpisode")
 			if addon.getSetting("UpdatePlayCount") == "false":
@@ -206,6 +194,29 @@ while (not xbmc.abortRequested):
 		player.mediaStarted = False
 	#
 
+
+	if player.mediaEnded:
+		log("--------- mediaEnded")
+		
+		if addon.getSetting("RepeatPlaylist") == "true":
+			if addon.getSetting("ShuffleOnRepeat") == "true":
+				busyDiag.create()
+				log("-- Shuffling Playlist")
+				if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Shuffling Playlist", 5000, icon))
+				random.shuffle(myEpisodes)
+				buildPlaylist(myEpisodes)
+			#
+
+			log("-- Restarting Playlist")
+			player.play(item=myPlaylist)
+			xbmc.sleep(100)
+		else:
+			player.scriptStopped = True
+
+		player.mediaEnded = False
+	#
+
+
 	if player.scriptStopped:
 		log("--------- scriptStopped")
 		if addon.getSetting("UpdatePlayCount") == "false" and 'lastEpisode' in locals():
@@ -213,22 +224,11 @@ while (not xbmc.abortRequested):
 			thread = threading.Thread(target=ResetPlayCount, args=(myEpisodes[lastEpisode],))
 			thread.start()
 		break
+	#
+
+	xbmc.sleep(100)
 #
 
-
-# Addon Finished.  Do Some Cleanup
-
-#Set Repeat
-log("Setting Repeat Mode")
-command = '{"jsonrpc": "2.0", "method": "Player.SetRepeat", "params": {"playerid": %d, "repeat": "%s"}, "id": 1}' % (playerID, currentRepeat)
-response = json.loads(xbmc.executeJSONRPC(command))
-log("-- " + str(response))
-
-log("Getting Repeat Mode")
-command = '{"jsonrpc": "2.0", "method": "Player.GetProperties", "params": {"playerid": %d, "properties": ["repeat"]}, "id": 1}' % (playerID)
-response = json.loads(xbmc.executeJSONRPC(command))
-log("-- " + str(response))
-log("-- New Repeat Mode: " + response['result']['repeat'])
 
 # Display Stopping Notification
 if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Stopping", 2000, icon))
