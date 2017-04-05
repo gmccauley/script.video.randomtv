@@ -91,7 +91,7 @@ if len(sys.argv) > 1:
 
 			
 		busyDiag.close()
-		selectedShows = xbmcgui.Dialog().multiselect("Select TV Shows", listShows, preselect=listPreSelect)
+		selectedShows = xbmcgui.Dialog().multiselect(xbmcaddon.Addon().getLocalizedString(32012), listShows, preselect=listPreSelect)
 
 		
 		if not selectedShows is None:
@@ -108,7 +108,7 @@ if len(sys.argv) > 1:
 
 
 # Display Starting Notification
-if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Starting", 2000, icon))
+if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, xbmcaddon.Addon().getLocalizedString(32007), 2000, icon))
 log("-------------------------------------------------------------------------")
 log("Starting")
 busyDiag.create()
@@ -147,7 +147,7 @@ log("Total Episodes: " + str(len(myEpisodes)))
 # If no episodes, display notification and quit
 if len(myEpisodes) == 0:
 	log("--------- No episodes")
-	xbmcgui.Dialog().ok(name, "No available episodes to play", "Please check your settings")
+	xbmcgui.Dialog().ok(name, xbmcaddon.Addon().getLocalizedString(32008), xbmcaddon.Addon().getLocalizedString(32009))
 	xbmc.executebuiltin('Addon.OpenSettings(%s)' % addonid)
 	quit()
 else:
@@ -202,7 +202,7 @@ while (not xbmc.abortRequested):
 			if addon.getSetting("ShuffleOnRepeat") == "true":
 				busyDiag.create()
 				log("-- Shuffling Playlist")
-				if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Shuffling Playlist", 5000, icon))
+				if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, xbmcaddon.Addon().getLocalizedString(32010), 5000, icon))
 				random.shuffle(myEpisodes)
 				buildPlaylist(myEpisodes)
 			#
@@ -231,6 +231,6 @@ while (not xbmc.abortRequested):
 
 
 # Display Stopping Notification
-if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, "Stopping", 2000, icon))
+if addon.getSetting("ShowNotifications") == "true": xbmc.executebuiltin('Notification(%s, %s, %d, %s)'%(name, xbmcaddon.Addon().getLocalizedString(32011), 2000, icon))
 log("Stopping")
 log("-------------------------------------------------------------------------")

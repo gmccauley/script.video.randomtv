@@ -20,6 +20,7 @@
     <news>
 v1.0.1 (5 April 2017)
   - Updated lang tag in addon.xml
+  - Added Localization
 v1.0.0 (1 April 2017)
   - Public Release
   - Added Settings for Repeat Playlist and Shuffle On Repeat
