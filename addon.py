@@ -103,7 +103,7 @@ if len(sys.argv) > 1:
 			addon.setSetting("includedShows", includedShows)
 
 		xbmc.executebuiltin('Addon.OpenSettings(%s)' % addonid)
-		xbmc.executebuiltin('SetFocus(205)')
+		xbmc.executebuiltin('SetFocus(201)')
 	quit()
 #
 
