@@ -183,29 +183,32 @@ else:
 
 
 while (not xbmc.Monitor().waitForAbort(1)):
-	if int(time.time()) >= AutoStopCheckTime:
-		log("-- Auto Stop Timer Reached")
-		AutoStopDialog.create(name, xbmcaddon.Addon().getLocalizedString(32015))
-		while int(time.time()) < AutoStopCheckTime + AutoStopWait:
-			AutoStopDialog.update(int(int(time.time() - AutoStopCheckTime) * 100 / AutoStopWait), xbmcaddon.Addon().getLocalizedString(32015), str(AutoStopWait - int(time.time() - AutoStopCheckTime)) + " " + xbmcaddon.Addon().getLocalizedString(32016))
-			if AutoStopDialog.iscanceled():
-				log("-- Dialog Cancelled - Breaking")
-				break
+	if addon.getSetting("AutoStop") == "true":
+		if int(time.time()) >= AutoStopCheckTime:
+			log("-- Auto Stop Timer Reached")
+			AutoStopDialog.create(name, xbmcaddon.Addon().getLocalizedString(32015))
+			while int(time.time()) < AutoStopCheckTime + AutoStopWait:
+				AutoStopDialog.update(int(int(time.time() - AutoStopCheckTime) * 100 / AutoStopWait), xbmcaddon.Addon().getLocalizedString(32015), str(AutoStopWait - int(time.time() - AutoStopCheckTime)) + " " + xbmcaddon.Addon().getLocalizedString(32016))
+				if AutoStopDialog.iscanceled():
+					log("-- Dialog Cancelled - Breaking")
+					break
+				#
+				xbmc.Monitor().waitForAbort(0.1)
 			#
-			xbmc.Monitor().waitForAbort(0.1)
+			if AutoStopDialog.iscanceled():
+				log("-- Dialog Cancelled")
+				AutoStopCheckTime = int(time.time()) + (int(addon.getSetting("AutoStopTimer")) * 60)
+			#
+			else:
+				log("-- Dialog Not Cancelled")
+				xbmc.executebuiltin('PlayerControl(Stop)')
+			#
+			AutoStopDialog.close()
+			xbmc.Monitor().waitForAbort(0.2)
 		#
-		if AutoStopDialog.iscanceled():
-			log("-- Dialog Cancelled")
-			AutoStopCheckTime = int(time.time()) + (int(addon.getSetting("AutoStopTimer")) * 60)
-		#
-		else:
-			log("-- Dialog Not Cancelled")
-			xbmc.executebuiltin('PlayerControl(Stop)')
-		#
-		AutoStopDialog.close()
-		xbmc.Monitor().waitForAbort(0.2)
 	#
 
+	
 	if player.mediaStarted:
 		log("--------- mediaStarted")
 		busyDiag.close()
